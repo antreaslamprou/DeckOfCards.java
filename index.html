@@ -1,43 +1,134 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JDoodle Embed</title>
-  <!-- Preconnect to JDoodle for faster loading -->
-  <link rel="preconnect" href="https://www.jdoodle.com">
-  
-  <!-- Load Pym.js securely over HTTPS -->
-  <script 
-    src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" 
-    crossorigin="anonymous" 
-    defer
-  ></script>
+    <title>Java Card Game Console</title>
 </head>
 <body>
-  <div id="jdoodle-container"></div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Double-check that Pym exists
-      if (typeof Pym === 'undefined') {
-        console.error('Pym.js failed to load!');
-        return;
-      }
-
-      // Initialize the embed
-      const pymParent = new Pym.Parent(
-        'jdoodle-container',
-        'https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b',
-        {}
-      );
-
-      // Handle messages from JDoodle
-      window.addEventListener('message', function(event) {
-        if (event.origin !== 'https://www.jdoodle.com') return;
-        if (event.data === 'jdoodle-ready') {
-          pymParent.sendMessage('setCode', 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}');
-        }
-      });
-    });
-  </script>
+    <div id="button-container"></div>
+    <div data-pym-src="https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b"></div>
+    <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
 </body>
+
 </html>
+<script>
+   
+    const iframe = document.querySelector('iframe');
+    iframe.addEventListener('load', () => {
+        const container = document.getElementById('button-container');
+
+        // 2. Create a new button element
+        const newButton = document.createElement('button');
+        newButton.textContent = 'Copy Code'; // Button text
+
+        // 3. Add an event listener 
+        newButton.addEventListener('click', copyCode());
+
+        // 4. Append the button to the container
+        container.appendChild(newButton);
+
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const innerElement = iframeDoc.querySelector('.checkbox-primary');
+        document.body.addEventListener('click', () => {
+            console.log(document.querySelector('.checkbox-primary'));
+        }, { once: true });
+        innerElement.checked = true;
+
+    });
+
+    function copyCode() {
+        //document.querySelector('.checkbox-primary').checked = true;
+
+        // Copy using Clipboard API (modern browsers)
+        navigator.clipboard.writeText(
+            `import java.util.Scanner;
+           public class MyClass {
+               public static void main(String args[]) {
+              int num;
+                   String[] suit = { "Clubs", "Diamonds", "Hearts", "Spades" }; //creates array
+                   String[] rank = { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" }; //creates array
+                   String[] deck = new String[52]; // create the deck [Week 7, Page 25]
+                   for (int i = 0; i < 13; i++) // initialize [Week 7, Page 25]
+                   {
+                       for (int j = 0; j < 4; j++)
+                       {
+                           deck[4 * i + j] = rank[i] + " of " + suit[j];
+                       }
+                   }
+               int RANKS = rank.length; //helps avoid hardcoded constants [Week 7, page 30]
+               int SUITS = suit.length;
+               int N = SUITS * RANKS;
+                   while (true) //runs infinitive while conditions are met
+                   {
+                       System.out.print("\\n========================================= \\n\\tDECK OF CARDS - Main Menu \\n========================================= \\n \\t> 1 to Shuffle the cards \\n \\t> 2 to Order the cards \\n \\t> 3 to Randomly pick 1 face card \\n \\t> 4 to Randomly pick 1 number card \\n \\t> 0 to Exit \\nChoose the operation you want to perform: ");
+                   Scanner a = new Scanner(System.in); //promts user for input
+                       while (a.hasNextInt() == false) //checks if the input is number else p[romts the user for valid answer
+                       {
+                           System.out.println("\\n*** Please provide a valid number (0-4) *** ");
+                           System.out.print("\\n========================================= \\n\\tDECK OF CARDS - Main Menu \\n========================================= \\n \\t> 1 to Shuffle the cards \\n \\t> 2 to Order the cards \\n \\t> 3 to Randomly pick 1 face card \\n \\t> 4 to Randomly pick 1 number card \\n \\t> 0 to Exit \\nChoose the operation you want to perform: ");
+                           a = new Scanner(System.in);
+                       }
+                       num = a.nextInt(); //declares variable with the users input
+                       switch (num) {
+                           case 0:
+                               System.out.println("\\n[******************************************] \\n[The harder your work, the Luckier you get!] \\n[******************************************]");
+                               System.exit(0); //ends program
+                               break;
+                           case 1: // Shuffle deck [Week 7, Page 26]
+                               for (int i = 0; i < 52; i++)
+                               {
+                               int r = i + (int)(Math.random() * (N - i)); // find a random position
+                               String t = deck[r]; // swap idiom
+                                   deck[r] = deck[i];
+                                   deck[i] = t;
+                               }
+                               System.out.println("\\n>>>>>>>>>>SHUFFLED DECK<<<<<<<<<<:"); for (int i=0; i < 52; i++) // loop to print shuffled deck [Week 7, page 30]
+                               {
+                                   System.out.println(deck[i]);
+                               }
+                               break;
+                           case 2:
+                               for (int i = 0; i < 13; i++) // orders deck back to its usual order [Week 7, Page 25]
+                               {
+                                   for (int j = 0; j < 4; j++)
+                                   {
+                                       deck[4 * i + j] = rank[i] + " of " + suit[j];
+                                   }
+                               }
+                               for (int i = 0; i < 52; i++) // loop to print ordered deck
+                               {
+                                   System.out.println(deck[i]);
+                               }
+                               break;
+                           case 3:
+                           // print a random card by picking a random suit and a random rank from face cards
+                           int j = (int)(Math.random() * 4); // between 0 and 3 for suits
+                           int i = 10 + (int)(Math.random() * 3); // between 10 and 12 for ranks
+                               System.out.println("\\n>>>>>>>>>>Your random FACE card is: " + rank[i] + " of " + suit[j]);
+                               break;
+                           case 4:
+                           // print a random card by picking a random suit and a random rank from number cards
+                           int k = (int)(Math.random() * 4); // between 0 and 3 for suits
+                           int l = 1 + (int)(Math.random() * 9); // between 1 and 10 for ranks
+                               System.out.println("\\n>>>>>>>>>>Your random NUMBER card is: " + rank[l] + " of " + suit[k]);
+                               break;
+                           default:
+                               System.out.println("\\nERROR! This is not a valid menu option. Please choose again or select 0 to EXIT.");
+
+                       }
+                   }
+               }
+           } `
+        )
+            .then(() => {
+                alert("Code copied, please paste it into the below text field!");
+            })
+            .catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+       
+    }
+   
+</script>
+
+ 
