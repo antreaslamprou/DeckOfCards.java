@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Deck Of Cards | Java</title>
-    <!--<link rel="icon" type="image/x-icon" href="">-->
+  <title>JDoodle Embed</title>
+  <!-- Preconnect to JDoodle for faster loading -->
+  <link rel="preconnect" href="https://www.jdoodle.com">
+  
+  <!-- Load Pym.js securely over HTTPS -->
+  <script 
+    src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" 
+    crossorigin="anonymous" 
+    defer
+  ></script>
 </head>
 <body>
+  <div id="jdoodle-container"></div>
 
-    <div id="jdoodle-container" data-pym-src="https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b"></div>
-    <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" defer></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const pymParent = new Pym.Parent(
-                'jdoodle-container',
-                'https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b',
-                {}
-            );
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Double-check that Pym exists
+      if (typeof Pym === 'undefined') {
+        console.error('Pym.js failed to load!');
+        return;
+      }
 
-            window.addEventListener('message', function (event) {
-                if (event.origin !== 'https://www.jdoodle.com') return;
-                if (event.data === 'jdoodle-ready') {
-                    pymParent.sendMessage('setCode', 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}');
-                }
-            });
-        });
-    </script>
+      // Initialize the embed
+      const pymParent = new Pym.Parent(
+        'jdoodle-container',
+        'https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b',
+        {}
+      );
+
+      // Handle messages from JDoodle
+      window.addEventListener('message', function(event) {
+        if (event.origin !== 'https://www.jdoodle.com') return;
+        if (event.data === 'jdoodle-ready') {
+          pymParent.sendMessage('setCode', 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
