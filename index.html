@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deck Of Cards | Java</title>
+    <!--<link rel="icon" type="image/x-icon" href="">-->
+</head>
+<body>
+
+    <div id="jdoodle-container" data-pym-src="https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b"></div>
+    <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pymParent = new Pym.Parent(
+                'jdoodle-container',
+                'https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b',
+                {}
+            );
+
+            window.addEventListener('message', function (event) {
+                if (event.origin !== 'https://www.jdoodle.com') return;
+                if (event.data === 'jdoodle-ready') {
+                    pymParent.sendMessage('setCode', 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
