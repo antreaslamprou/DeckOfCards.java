@@ -3,130 +3,636 @@
 <html>
 <head>
     <title>Java Card Game Console</title>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div id="button-container"></div>
-    <div data-pym-src="https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b"></div>
-    <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
+    <section class="button-container">
+        <button onclick="copyCode(1);">1. Deck of Cards</button>
+        <button onclick="copyCode(2);">2. Number to Text</button>
+        <button onclick="copyCode(3);">3. Shopping List</button>
+        <button onclick="copyCode(4);">4. Student Hall</button>
+        <button onclick="copyCode(5);">5. Time Translator</button>
+    </section>
+    <section>
+        <div id="iframe-container" data-pym-src="https://www.jdoodle.com/embed/v1/9ffebbe68f045f9b"></div>
+        <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
+    </section>
 </body>
-
 </html>
+
 <script>
-   
-    const iframe = document.querySelector('iframe');
-    iframe.addEventListener('load', () => {
-        const container = document.getElementById('button-container');
 
-        // 2. Create a new button element
-        const newButton = document.createElement('button');
-        newButton.textContent = 'Copy Code'; // Button text
+    /* Override */
+    //document.addEventListener('DOMContentLoaded', function () {
+    //    const iframe = document.getElementByType(iframe);
+    //    iframe.onload = function () {
+    //        document.querySelector('.overflow-auto').style.overflow = hidden;
+    //    };
+    //});
 
-        // 3. Add an event listener 
-        newButton.addEventListener('click', copyCode());
 
-        // 4. Append the button to the container
-        container.appendChild(newButton);
-
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        const innerElement = iframeDoc.querySelector('.checkbox-primary');
-        document.body.addEventListener('click', () => {
-            console.log(document.querySelector('.checkbox-primary'));
-        }, { once: true });
-        innerElement.checked = true;
-
+    // Observer to handle dynamically added iframes
+    const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            Array.from(mutation.addedNodes).forEach(function (node) {
+                if (node.tagName === 'IFRAME') {
+                    disableIframeScroll(node);
+                }
+            });
+        });
     });
 
-    function copyCode() {
-        //document.querySelector('.checkbox-primary').checked = true;
+    // Start observing the document body
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 
-        // Copy using Clipboard API (modern browsers)
-        navigator.clipboard.writeText(
-            `import java.util.Scanner;
-           public class MyClass {
-               public static void main(String args[]) {
-              int num;
-                   String[] suit = { "Clubs", "Diamonds", "Hearts", "Spades" }; //creates array
-                   String[] rank = { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" }; //creates array
-                   String[] deck = new String[52]; // create the deck [Week 7, Page 25]
-                   for (int i = 0; i < 13; i++) // initialize [Week 7, Page 25]
-                   {
-                       for (int j = 0; j < 4; j++)
-                       {
-                           deck[4 * i + j] = rank[i] + " of " + suit[j];
-                       }
-                   }
-               int RANKS = rank.length; //helps avoid hardcoded constants [Week 7, page 30]
-               int SUITS = suit.length;
-               int N = SUITS * RANKS;
-                   while (true) //runs infinitive while conditions are met
-                   {
-                       System.out.print("\\n========================================= \\n\\tDECK OF CARDS - Main Menu \\n========================================= \\n \\t> 1 to Shuffle the cards \\n \\t> 2 to Order the cards \\n \\t> 3 to Randomly pick 1 face card \\n \\t> 4 to Randomly pick 1 number card \\n \\t> 0 to Exit \\nChoose the operation you want to perform: ");
-                   Scanner a = new Scanner(System.in); //promts user for input
-                       while (a.hasNextInt() == false) //checks if the input is number else p[romts the user for valid answer
-                       {
-                           System.out.println("\\n*** Please provide a valid number (0-4) *** ");
-                           System.out.print("\\n========================================= \\n\\tDECK OF CARDS - Main Menu \\n========================================= \\n \\t> 1 to Shuffle the cards \\n \\t> 2 to Order the cards \\n \\t> 3 to Randomly pick 1 face card \\n \\t> 4 to Randomly pick 1 number card \\n \\t> 0 to Exit \\nChoose the operation you want to perform: ");
-                           a = new Scanner(System.in);
-                       }
-                       num = a.nextInt(); //declares variable with the users input
-                       switch (num) {
-                           case 0:
-                               System.out.println("\\n[******************************************] \\n[The harder your work, the Luckier you get!] \\n[******************************************]");
-                               System.exit(0); //ends program
-                               break;
-                           case 1: // Shuffle deck [Week 7, Page 26]
-                               for (int i = 0; i < 52; i++)
-                               {
-                               int r = i + (int)(Math.random() * (N - i)); // find a random position
-                               String t = deck[r]; // swap idiom
-                                   deck[r] = deck[i];
-                                   deck[i] = t;
-                               }
-                               System.out.println("\\n>>>>>>>>>>SHUFFLED DECK<<<<<<<<<<:"); for (int i=0; i < 52; i++) // loop to print shuffled deck [Week 7, page 30]
-                               {
-                                   System.out.println(deck[i]);
-                               }
-                               break;
-                           case 2:
-                               for (int i = 0; i < 13; i++) // orders deck back to its usual order [Week 7, Page 25]
-                               {
-                                   for (int j = 0; j < 4; j++)
-                                   {
-                                       deck[4 * i + j] = rank[i] + " of " + suit[j];
-                                   }
-                               }
-                               for (int i = 0; i < 52; i++) // loop to print ordered deck
-                               {
-                                   System.out.println(deck[i]);
-                               }
-                               break;
-                           case 3:
-                           // print a random card by picking a random suit and a random rank from face cards
-                           int j = (int)(Math.random() * 4); // between 0 and 3 for suits
-                           int i = 10 + (int)(Math.random() * 3); // between 10 and 12 for ranks
-                               System.out.println("\\n>>>>>>>>>>Your random FACE card is: " + rank[i] + " of " + suit[j]);
-                               break;
-                           case 4:
-                           // print a random card by picking a random suit and a random rank from number cards
-                           int k = (int)(Math.random() * 4); // between 0 and 3 for suits
-                           int l = 1 + (int)(Math.random() * 9); // between 1 and 10 for ranks
-                               System.out.println("\\n>>>>>>>>>>Your random NUMBER card is: " + rank[l] + " of " + suit[k]);
-                               break;
-                           default:
-                               System.out.println("\\nERROR! This is not a valid menu option. Please choose again or select 0 to EXIT.");
-
-                       }
-                   }
-               }
-           } `
-        )
-            .then(() => {
-                alert("Code copied, please paste it into the below text field!");
-            })
-            .catch(err => {
-                console.error("Failed to copy: ", err);
+    // Function to disable scrolling in a single iframe
+    function disableIframeScroll(iframe) {
+        try {
+            // For same-origin iframes
+            iframe.addEventListener('load', function () {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                iframeDoc.body.style.overflow = 'hidden';
+                iframeDoc.documentElement.style.overflow = 'hidden';
             });
-       
+        } catch (e) {
+            // For cross-origin iframes
+            iframe.style.overflow = 'hidden';
+            iframe.scrolling = 'no';
+        }
+    }
+
+    // Disable scroll on existing iframes
+    Array.from(document.getElementsByTagName('iframe')).forEach(disableIframeScroll);
+   
+    function copyCode(option) {
+        let isOk = false;
+        switch (option) {
+            case 1:
+                navigator.clipboard.writeText(
+`/*
+    * Author: Antreas Lamprou (G21070510)
+    * Email: ALambrou1@uclan.ac.uk
+    * Description: The program prints a menu to the user with some options and until the user ends the program, the program will do the operations available at the menu.
+    * To run the program: java DeckOfCards
+    */
+
+import java.util.Scanner;
+
+public class DeckOfCards
+{
+    public static void main(String[] args)
+    {
+        int num;
+        String [] suit = { "Clubs", "Diamonds", "Hearts", "Spades" }; //creates array [Week 7, page 24]
+        String [] rank = { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" }; //creates array [Week 7, page 24]
+        String [] deck = new String[52]; // create the deck [Week 7, Page 25]
+        for(int i = 0; i < 13; i++) // initialize [Week 7, Page 25]
+        {
+            for(int j = 0; j < 4; j++)
+            {
+                deck[4*i + j] = rank[i] + " of " + suit[j];
+            }
+        }
+        int RANKS = rank.length; //helps avoid hardcoded constants [Week 7, page 30]
+        int SUITS = suit.length;
+        int N = SUITS * RANKS;
+        while (true || (num < 0 || num >4 )) //runs infinitive while conditions are met
+        {
+            System.out.print("\n========================================= \n\tDECK OF CARDS - Main Menu \n========================================= \n \t> 1 to Shuffle the cards \n \t> 2 to Order the cards \n \t> 3 to Randomly pick 1 face card \n \t> 4 to Randomly pick 1 number card \n \t> 0 to Exit \nChoose the operation you want to perform: ");
+            Scanner a = new Scanner(System.in); //promts user for input
+            while (a.hasNextInt() == false) //checks if the input is number else p[romts the user for valid answer
+            {
+                System.out.println("\n*** Please provide a valid number (0-4) *** ");
+                System.out.print("\n========================================= \n\tDECK OF CARDS - Main Menu \n========================================= \n \t> 1 to Shuffle the cards \n \t> 2 to Order the cards \n \t> 3 to Randomly pick 1 face card \n \t> 4 to Randomly pick 1 number card \n \t> 0 to Exit \nChoose the operation you want to perform: ");
+                a = new Scanner(System.in);
+            }
+            num = a.nextInt(); //declares variable with the users input
+            switch (num)
+            {
+                case 0:
+                    System.out.println("[******************************************] \n[The harder your work, the Luckier you get!] \n[******************************************]");
+                    System.exit(0); //ends program
+                    break;
+                case 1: // Shuffle deck [Week 7, Page 26]
+                    for(int i = 0; i < 52; i++)
+                    {
+                        int r = i + (int) (Math.random() * (N-i)); // find a random position
+                        String t = deck[r]; // swap idiom
+                        deck[r] = deck[i];
+                        deck[i] = t;
+                    }
+                    System.out.println("\n>>>>>>>>>>SHUFFLED DECK<<<<<<<<<<:");
+                    for (int i = 0; i < 52; i++) // loop to print shuffled deck [Week 7, page 30]
+                    {
+                        System.out.println(deck[i]);
+                    }
+                    break;
+                case 2:
+                    for(int i = 0; i < 13; i++) // orders deck back to its usual order [Week 7, Page 25]
+                    {
+                        for(int j = 0; j < 4; j++)
+                        {
+                            deck[4*i + j] = rank[i] + " of " + suit[j];
+                        }
+                    }
+                    for (int i = 0; i < 52; i++) // loop to print ordered deck
+                    {
+                        System.out.println(deck[i]);
+                    }
+                    break;
+                case 3:
+                    // print a random card by picking a random suit and a random rank from face cards [Week 7, page 24]
+                    int j = (int) (Math.random() * 4); // between 0 and 3 for suits [Week 7, page 24]
+                    int i = 10 + (int) (Math.random() * 3); // between 10 and 12 for ranks
+                    System.out.println("\n>>>>>>>>>>Your random FACE card is: " + rank[i] + " of " + suit[j]);
+                    break;
+                case 4:
+                    // print a random card by picking a random suit and a random rank from number cards [Week 7, page 24]
+                    int k = (int) (Math.random() * 4); // between 0 and 3 for suits [Week 7, page 24]
+                    int l = 1 + (int) (Math.random() * 9); // between 1 and 10 for ranks
+                    System.out.println("\n>>>>>>>>>>Your random NUMBER card is: " + rank[l] + " of " + suit[k]);
+                    break;
+                default:
+                    System.out.println("\nERROR! This is not a valid menu option. Please choose again or select 0 to EXIT.");
+            }
+        }
+    }
+}`
+                );
+                isOk = true;
+                break;
+            case 2:
+                navigator.clipboard.writeText(
+`/*
+    * Author: Antreas Lamprou (G21070510)
+    * Email: ALambrou1@uclan.ac.uk
+    * Description: The program converts a number into text.
+    * To compile the program: javac NumToText.java
+    * To run the program: java NumToText 1
+    */
+
+public class NumToText {
+    public static void main(String[] args) {
+        int num = Integer.parseInt(args[0]); //makes the user to input an integer number for input
+        int num1 = 0; // used later for two decimal numbers
+        String [] units = {"", "One", "To", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"}; //create array for units
+        String [] decades = {"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"}; //create array for decates
+        if (num<-100 || num>100){ //add the maximum and minimum
+            System.out.println("Number out of bounds. Please provide a number between -100 and 100");
+            System.exit(0); //ends the program [https://www.geeksforgeeks.org/system-exit-in-java/#:~:text=exit()%20method%20exits%20current,method%20takes%20a%20status%20code]
+        } else {
+            System.out.println(num); //returns the number to the user
+        } if (num == 0) { //checks if number is zero
+            System.out.print("Zero");
+        } else if (num == 100 || num == -100) { //checks if number is One Hundred
+            if (num<0) { //checks if number is negative
+                System.out.print("Minus ");
+            }System.out.print("One Hundred");
+        } else if (num>-10 && num<10) { //checks if number is one decimal
+            if (num < 0) { //checks if number is minus
+                System.out.print("Minus ");
+                num = -num; //makes the number positive for the arrays
+            }System.out.print(units[num]);
+        } else if (num == 11 || num == -11) {
+            if (num < 0) { //checks if number is minus
+                System.out.print("Minus ");
+                num = -num; //makes the number positive for the arrays
+            }System.out.println("Eleven");
+        } else if (num == 12 || num == -12) {
+            if (num < 0) { //checks if number is minus
+                System.out.print("Minus ");
+                num = -num; //makes the number positive for the arrays
+            }System.out.println("Twelve");
+        } else if (num == 13 || num == -13) {
+            if (num < 0) { //checks if number is minus
+                System.out.print("Minus ");
+                num = -num; //makes the number positive for the arrays
+            }System.out.println("Thirteen");
+        } else if ((num >= 14 && num<20) || (num <= 14 && num > -20)) {
+            if (num < 0) { //checks if number is minus
+                System.out.print("Minus ");
+                num = -num; //makes the number positive for the arrays
+            } num = num%10;
+            System.out.println(units[num] + "teen");
+        } else if (num <= -20 || num >=-20) { //checks if number is two decimals
+            if (num < 0) { //checks if number is minus
+                System.out.print("Minus ");
+                num = -num; //makes the number positive for the arrays
+            } int num2 = num/10; //finds the decades
+            while (num > 10) {
+                num = num%10; //finds the units
+            } System.out.print(decades[num2] + " " + units[num]);
+        }
+    }
+}`
+                );
+                isOk = true;
+                break;
+            case 3:
+                navigator.clipboard.writeText(
+`/*
+    * Author: Antreas Lamprou (G21070510)
+    * Email: ALambrou1@uclan.ac.uk
+    * Description: The program receives at lunch how many items should be for a list , then the quantities and then the item.
+    * To compile the program: javac ShoppingList.java
+    * To run the program: java ShoppingList 2 1 6 ham eggs
+    */
+
+public class ShoppingList {
+    public static void main(String[] args) {
+        int count = args.length; // finds the number of arguments [https://stackoverflow.com/questions/11651857/java-101-how-do-i-count-the-number-of-arguments-passed-into-main]
+        int n = Integer.parseInt(args[0]);
+        if (n <= 0) {
+            System.out.println("Please provide a valid number of items");
+            System.exit(0);
+        }
+        String[] a = new String[n]; //creates an array with the size of the first argument (for the number of items)
+        String[] b = new String[count - n - 1]; //creates an array with the size of the other arguments (for the items)
+        System.out.print("Quantities:");
+        int i; // declaration for variable
+        for (i = 0; i < n; i++) // for loop to print all the quantities
+        {
+            a[i] = args[i + 1];
+            System.out.print(" " + a[i]);
+        }
+        System.out.print('\n' + "Items:");
+        int l = i + 1;
+        for (int j = 0; j < (count - n - 1); j++) // for loop to print all the items
+        {
+            b[j] = args[l];
+            l++;
+            System.out.print(" " + b[j]);
+        }
+        System.out.print('\n' + "My Shopping List:");
+        myList(a, b); // executes the function
+    }
+
+    static String[] myList(String[] a, String[] b)
+    {
+        int sizeA = a.length;
+        int sizeB = b.length;
+        String[] myList = new String[sizeA + sizeB]; // creates the array with the size of items and quantities
+        for (int k = 0; k < sizeA; k++) // for loop to print each quantity and item on list
+        {
+            myList[k] = (a[k] + " " + b[k]);
+            System.out.print(" " + myList[k]);
+        }
+        if (sizeA != sizeB) // checks if items and quantities have the same number
+        {
+            for (int f = sizeA; f < sizeB; f++) {
+                myList[f] = b[f]; // assigns to the array the last items without quantities
+                System.out.print(" " + myList[f]);
+            }
+        }
+        return myList;
+    }
+}`
+                );
+                isOk = true;
+                break;
+            case 4:
+                navigator.clipboard.writeText(
+`/*
+    * Author: Antreas Lamprou (G21070510)
+    * Email: ALambrou1@uclan.ac.uk
+    * Description: The program prints the floor plan of a student accommodation hall according to the number of students and the type of the room.
+    * To compile the program: javac StudentHall.java
+    * To run the program: java StudentHall
+    */
+
+import java.util.Scanner;
+
+public class StudentHall
+{
+    public static void main(String[] args)
+    {
+        int num;
+        System.out.print("Number of students staying in Student Accommodation> ");
+        Scanner a = new Scanner(System.in); //promts the user for an input
+        if (a.hasNextInt() == false) //checks if the user input was number [https://www.studytonight.com/java-examples/check-if-input-is-integer-in-java#:~:text=hasNextInt()%20method%20checks%20whether,otherwise%20it%20will%20return%20false.]
+        {
+            System.out.print("Please provide a valid input (number) > ");
+            Scanner c = new Scanner(System.in);
+            num = c.nextInt(); //stores input as num
+        }
+        else
+        {
+            num = a.nextInt();
+        }
+        if (num<1) //checks if input is valid to end the program
+        {
+            System.exit(0);
+        }
+        int type;
+        System.out.print("Would you like ensuite rooms?" + '\n' + "Please type [1] for Yes or [0] for No: ");
+        Scanner b = new Scanner(System.in); //promts the user for input
+        if (b.hasNextInt() == false) //checks if the user input is not a number [https://www.studytonight.com/java-examples/check-if-input-is-integer-in-java#:~:text=hasNextInt()%20method%20checks%20whether,otherwise%20it%20will%20return%20false.]
+        {
+            System.out.print("Please provide a valid input!!\n[1] for Yes or [0] for No: ");
+            Scanner d = new Scanner(System.in);
+            type = d.nextInt(); //stores input as num
+        }
+        else
+        {
+            type = b.nextInt();
+        }
+        int area ;
+        String type1; //create a variable for type giving it one of the two values
+        while (type != 0 && type != 1) // checks if input is not 1 or 0
+        {
+            System.out.print("Please provide a valid input!!\n[1] for Yes or [0] for No: ");
+            Scanner d = new Scanner(System.in);
+            if (d.hasNextInt() == false) //checks if input is not a number
+            {
+                System.out.print("Please provide a valid input!!\n[1] for Yes or [0] for No: ");
+                Scanner e = new Scanner(System.in);
+                type = e.nextInt();
+            }
+            else
+            {
+                type = d.nextInt(); //stores input as number
+            }
+        }
+        if (type==0) //checks if the user didnt want ensuite rooms to calculate area
+        {
+            type1 = "BASIC";
+            area = num*9;
+        }
+        else //if the user did want ensuited rooms
+        {
+            type1 = "ENSUITE";
+            area = num*24;
+        }
+        System.out.println("The required area to accommodate " + num + " students in " + type1 + " ROOMS is: " + area + " m2" + '\n' + "The floor plan of the Student Hall:");
+        String [] ensuitetop = {"| | | | | | |", " | | | | | |", " | | | | | |"}; //creates an array for the top/bot row for ensuite
+        String [] ensuitemid = {"|           *", "           *", "           |"}; //creates an array for the mid row for ensuite
+        String [] basictop = {"| | | |", " | | |", " | | |"}; //creates an array for the top/bot row for basic
+        String [] basicmid = {"|     *", "     *", "     |"}; //creates an array for the mid row for basic
+        if (type1=="ENSUITE") //for ensuite rooms
+        {
+            if (num==1) //checks if one person is staying
+            {
+                System.out.println("| | | | | | |");
+                System.out.println("|           |");
+                System.out.println("|           |");
+                System.out.println("|           |");
+                System.out.println("|           |");
+                System.out.println("| | | | | | |");
+            }
+            else //if its more than 1 person
+            {
+                for (int i = 1; i <= num; i++) //creates for loop for the top row
+                {
+                    if (i == 1) // checks if its the first square
+                    {
+                        System.out.print(ensuitetop[0]);
+                    }
+                    else if (i == num) //checks if its the last square
+                    {
+                        System.out.print(ensuitetop[2]);
+                    }
+                    else //other than those two layers
+                    {
+                        System.out.print(ensuitetop[1]);
+                    }
+                }
+                for (int j = 0; j < 4; j++) //for loop to print mid rows x4 times
+                {
+                    System.out.println(); //goes to the next line
+                    for (int k = 1; k <= num; k++) // creates for loop for the middle rows
+                    {
+                        if (k == 1) //checks if its the first square
+                        {
+                            System.out.print(ensuitemid[0]);
+                        }
+                        else if (k == num) //checks if its the last square
+                        {
+                            System.out.print(ensuitemid[2]);
+                        }
+                        else //other than those two layers
+                        {
+                            System.out.print(ensuitemid[1]);
+                        }
+                    }
+                }
+                System.out.println();
+                for (int i = 1; i <= num; i++) { //creates for loop for the bot row
+                    if (i == 1) { //checks if its the first square
+                        System.out.print(ensuitetop[0]); //applies the first square layout
+                    } else if (i == num) { //checks if its the last square
+                        System.out.print(ensuitetop[2]); //applies the last square layout
+                    } else { //other than those two layers
+                        System.out.print(ensuitetop[1]); // applies the middle layout
+                    }
+                }
+            }
+        }
+        if (type1=="BASIC") //for basic rooms
+        {
+            if (num==1) //checks if one person is staying
+            {
+                System.out.println("| | | |");
+                System.out.println("|     |");
+                System.out.println("|     |");
+                System.out.println("|     |");
+                System.out.println("| | | |");
+            }
+            else //if its more than 1 person
+            {
+                for (int i = 1; i <= num; i++) //creates for loop for the top row
+                {
+                    if (i == 1) // checks if its the first square
+                    {
+                        System.out.print(basictop[0]);
+                    }
+                    else if (i == num) //checks if its the last square
+                    {
+                        System.out.print(basictop[2]);
+                    }
+                    else //other than those two layers
+                    {
+                        System.out.print(basictop[1]);
+                    }
+                }
+                for (int j = 0; j < 3; j++) //for loop to do the middle row x3 times
+                {
+                    System.out.println();
+                    for (int k = 1; k <= num; k++) // creates for loop for the middle rows
+                    {
+                        if (k == 1) //checks if its the first square
+                        {
+                            System.out.print(basicmid[0]);
+                        }
+                        else if (k == num) //checks if its the last square
+                        {
+                            System.out.print(basicmid[2]);
+                        }
+                        else //other than those two layers
+                        {
+                            System.out.print(basicmid[1]);
+                        }
+                    }
+                }
+                System.out.println();
+                for (int i = 1; i <= num; i++) //creates for loop for the bot row
+                {
+                    if (i == 1) //checks if its the first square
+                    {
+                        System.out.print(basictop[0]);
+                    }
+                    else if (i == num) //checks if its the last square
+                    {
+                        System.out.print(basictop[2]);
+                    }
+                    else //other than those two layers
+                    {
+                        System.out.print(basictop[1]);
+                    }
+                }
+            }
+        }
+    }
+}`
+                );
+                isOk = true;
+                break;
+            case 5:
+                navigator.clipboard.writeText(
+`/*
+    * Author: Antreas Lamprou (G21070510)
+    * Email: ALambrou1@uclan.ac.uk
+    * Description: The program converts seconds into seconds, minutes and hours (max 1 day).
+    * To compile the program: javac TimeTranslator.java
+    * To run the program: java TimeTranslator
+    */
+
+import java.util.Scanner;
+
+public class TimeTranslator
+{
+    public static void main(String[] args)
+    {
+        String[] single = {"second", "minute", "hour"}; // for single values
+        String[] plural = {"seconds", "minutes", "hours"}; // for plural values
+        String secs = "";
+        String mins = "";
+        String hrs = "";
+        int num; // will be used later as input value
+        while (true)
+        {
+            System.out.print("Enter number of seconds: "); //prints this message to the user
+            Scanner a = new Scanner(System.in); //promts the user to write a value
+            if (a.hasNextInt() == false)
+            {
+                System.out.print("Please enter a VALID NUMBER of seconds: ");
+                Scanner b = new Scanner(System.in);
+                num = b.nextInt();
+                if (num ==0) System.exit(0);
+            }
+            else num = a.nextInt(); //stores user value as variable "sec"
+            if (num<0) // checks if user used a negative value
+            {
+                System.out.println("Please enter a VALID NUMBER of secons: ");
+                Scanner b = new Scanner(System.in);
+                num = b.nextInt();
+                if (num ==0) System.exit(0);
+            }
+            while (num > 86400) //promts the user over and over again till a valid input comes
+            {
+                System.out.println("The value you entered is longer than a day! Try a smaller value.");
+                System.out.print("Enter number of seconds: "); //prints this message to the user
+                Scanner b = new Scanner(System.in); //promts the user to write a value
+                num = b.nextInt(); //stores user value as variable "sec"
+            }
+            if (num == 0)
+            {
+                System.exit(0); //exits the program
+            }
+            else if (num == 86400) //checks if its full day
+            {
+                System.out.println("FULL DAY!"); //prints out full day
+            }
+            else
+            {
+                int numhr = num / 3600; //finds how many hours
+                if (numhr == 1) //checks if its one hour
+                {
+                    hrs = numhr + " " + single[2]; //applies single array
+                }
+                else
+                {
+                    hrs = numhr + " " + plural[2]; //applies plural array
+                }
+                int nummin = 0;
+                nummin = (num % 3600) / 60; // finds minutes (excluding hrs)
+                if (nummin == 1) //checks if its one minute
+                {
+                    mins = nummin + " " + single[1]; //applies single array
+                }
+                else
+                {
+                    mins = nummin + " " + plural[1]; //applies plural array
+                }
+                int numsec = (num % 3600) % 60; // finds the seconds (excluding hrs and mins)
+                if (numsec == 1)
+                {
+                    secs = numsec + " " + single[0]; //applies single array
+                }
+                else
+                {
+                    secs = numsec + " " + plural[0]; //applies plural array
+                }
+                if (numhr == 0) //checks if hours are zero
+                {
+                    if (nummin == 0) //checks if minutes are zero
+                    {
+                        System.out.println(secs );
+                    }
+                    else if (numsec == 0)
+                    {
+                        System.out.println(mins + " exactly!");
+                    }
+                    else
+                    {
+                        System.out.println(secs + ", " + mins);
+                    }
+                }
+                else if (nummin == 0) //checks if minutes are zero
+                {
+                    if (numsec == 0) //checks if seconds are zero
+                    {
+                        System.out.println(hrs + " exactly!");
+                    }
+                    else
+                    {
+                        System.out.println(secs + ", " + hrs);
+                    }
+                }
+                else if (numsec == 0) //checks if seconds are zero
+                {
+                    System.out.println(mins + ", " + hrs);
+                }
+                else
+                {
+                    System.out.println(secs + ", " + mins + ", " + hrs);
+                }
+            }
+        }
+    }
+}`
+                );
+                isOk = true;
+                break;
+
+        }               
+        if (isOk) {
+            alert("Code copied, please paste it into the below text field!");
+        } else {
+            alert("Failed to copy. Please refresh and try again.");
+        }       
     }
    
 </script>
