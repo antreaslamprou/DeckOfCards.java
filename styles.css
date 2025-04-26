@@ -1,5 +1,7 @@
-html {
-    overflow: scroll;
+body {
+    background: url("background.jpg");
+    background-size: contain;
+    background-position: top;
 }
 
 h1 {
